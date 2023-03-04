@@ -12,7 +12,17 @@ namespace EventOrganizer
         {
             ClientName = clientName;
         }
+        public Client()
+        {
+            ClientName = "NO NAME";
+        }
 
+        public bool IsNew { get; set; }
         public string ClientName { get; set; }
+    
+        public void EditClient()
+        {
+            Console.WriteLine("Client editing has not yet been implimented.");
+        }
     }
 }
