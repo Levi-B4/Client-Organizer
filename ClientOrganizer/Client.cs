@@ -29,6 +29,7 @@ namespace ClientOrganizer
                     return;
                 }
             } while (string.IsNullOrWhiteSpace(input) || input.Length > maxClientNameSize);
+            ClientName = input;
         }
         public String ListClient()
         {

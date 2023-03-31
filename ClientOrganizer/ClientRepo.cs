@@ -92,7 +92,7 @@ namespace ClientOrganizer
             bool selectingClient;
             for (int i = 0; i < matches.Count(); i++)
             {
-                Console.WriteLine($"{i + 1}: {matches.ElementAt(i).ClientName}");
+                Console.WriteLine($"{(i%5) + 1}: {matches.ElementAt(i).ClientName}");
 
                 if ((i + 1) % 5 == 0 || i + 1 == matches.Count())
                 {
