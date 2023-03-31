@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using static System.Formats.Asn1.AsnWriter;
@@ -19,7 +20,6 @@ namespace EventOrganizer
     {
 
         public List<Client> Clients { get; set; }
-        //private string ClientRepoLocation = @"~\DataBase\ClientRepo.json";
         private string clientRepoLocation = Path.Combine(Environment.CurrentDirectory, @"ClientRepo.json");
 
         public ClientRepo()
@@ -87,25 +87,25 @@ namespace EventOrganizer
             {
                 Console.WriteLine($"{i + 1}: {matches.ElementAt(i).ClientName}");
 
-                if (i + 1 % 5 == 0 || i + 1 == matches.Count())
+                if ((i + 1) % 5 == 0 || i + 1 == matches.Count())
                 {
                     selectingClient = true;
                     while (selectingClient)
                     {
-                        Console.WriteLine("Enter the number of the correspiding client " +
-                                          "or type Next Page to view more matching clients. " +
-                                          "Type Exit to exit search");
+                        Console.WriteLine("Enter the number of the corresponding client " +
+                                          "or type \"Next\" to view more matching clients. " +
+                                          "Type \"Exit\" to exit search");
                         string input = Console.ReadLine();
-                        if (int.TryParse(input, out int SelectedClientInd) && (SelectedClientInd >= 1 || SelectedClientInd <= 5) && SelectedClientInd <= matches.Count())
+                        if (int.TryParse(input, out int SelectedClientInd) && SelectedClientInd >= 1 && SelectedClientInd <= 5 && SelectedClientInd <= matches.Count())
                         {
-                            return matches.ElementAt(int.Parse(input) - 1);
+                            return matches.ElementAt((i / 5) + int.Parse(input) - 1);
                         }
                         else if (input.ToLower() == "exit")
                         {
                             Console.WriteLine("\nExiting search\n");
                             return new Client("exit search");
                         }
-                        else if (input.ToLower() == "next page")
+                        else if (input.ToLower() == "next")
                         {
                             selectingClient = false;
                         }
@@ -117,19 +117,34 @@ namespace EventOrganizer
             return new Client("exit search");
         }
 
-        public Client SearchExactClientName(String clientName)
+        public bool VerifyIfClientExists(String clientName)
         {
-            return Clients.Where(i => i.ClientName == clientName).First();
+            IEnumerable<Client> matchingClients = Clients.Where(i => i.ClientName == clientName);
+            return matchingClients.Count() != 0;
         }
 
-        public void AddClientToTempMemory()
+        public void AddClientToTempMemory(Client client)
         {
-
+            Clients.Add(client);
         }
 
-        public void RemoveClientFromTempMemory()
+        public void RemoveClientFromTempMemory(String clientName)
         {
+            Clients = Clients.Where(i => i.ClientName != clientName).ToList();
+            Console.WriteLine($"{clientName} has been removed.");
+        }
 
+        public void ViewClients()
+        {
+            Console.WriteLine("\n\n");
+            Client clientToList;
+            for (int i = 0; i < Clients.Count(); i++)
+            {
+                clientToList = Clients.ElementAt(i);
+                Console.WriteLine($"{String.Format("{0:000}", i + 1)}: {clientToList.ListClient()}");
+            }
+            Console.WriteLine("Press Enter to exit to the Main Menu");
+            Console.ReadLine();
         }
 
         public void UpdateClientInTempMemory(Client newClient)

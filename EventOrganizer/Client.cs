@@ -11,35 +11,31 @@ namespace EventOrganizer
         public Client(string clientName)
         {
             ClientName = clientName;
+            DateAdded = DateTime.Now.ToString("MM/dd/yyyy");
         }
         public string ClientName { get; set; }
-        public int MaxClientNameSize { get; set; } = 30;
-        public List<IEvent> ClientEvents { get; set; }
+        public string DateAdded { get; set; }
 
-
-        public void RenameClient()
+        public void Rename(int maxClientNameSize)
         {
-            Console.WriteLine("Rename Client has not yet been implimented.");
+            bool invalidInput = true;
+            String input;
+            do
+            {
+                Console.WriteLine($"Enter the client's new name or type \"Exit\" to exit to main menu. ({maxClientNameSize} characters or less)");
+                input = Console.ReadLine();
+                if (input.ToLower() == "exit")
+                {
+                    return;
+                }
+            } while (string.IsNullOrWhiteSpace(input) || input.Length > maxClientNameSize);
         }
-        public void AddEvent()
+        public String ListClient()
         {
-            Console.WriteLine("Add Event has not yet been implimented.");
-        }
-        public void EditEvent()
-        {
-            Console.WriteLine("Edit Event has not yet been implimented.");
-        }
-        public void RemoveEvent()
-        {
-            Console.WriteLine("Remove Event has not yet been implimented.");
-        }
-        public void ViewEvents()
-        {
-            Console.WriteLine("View not yet implimented");
-        }
-        public void VerifyNewEvent() 
-        {
-            Console.WriteLine("Verification for new events not yet implimented");
+            int maxClientNameSize = 30;
+            int nameSize = ClientName.Length;
+            String spacingForCongruence = new string(' ', maxClientNameSize - nameSize + 1);
+            return $"{ClientName}{spacingForCongruence}{DateAdded}";
         }
     }
 }
