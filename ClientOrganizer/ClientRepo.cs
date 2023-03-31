@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -16,7 +17,7 @@ using static System.Formats.Asn1.AsnWriter;
 
 namespace ClientOrganizer
 {
-    internal class ClientRepo
+    public class ClientRepo
     {
 
         public List<Client> Clients { get; set; }
@@ -53,28 +54,29 @@ namespace ClientOrganizer
             return clients;
         }
 
-        private void CreateInitialClientRepoFile()
+        void CreateInitialClientRepoFile()
         {
-            String JClients = "[\r\n  {\r\n     \"ClientName\": \"Barry Canary\",\r\n    \"DateAdded\": \"04/20/2020\"\r\n  },\r\n  {\r\n    " +
-                                               "\"ClientName\": \"Adam Adams\",\r\n    \"DateAdded\": \"10/15/2022\"\r\n  },\r\n  {\r\n    " +
-                                               "\"ClientName\": \"Code Louisville\",\r\n    \"DateAdded\": \"12/02/2021\"\r\n  },\r\n  {\r\n    " +
-                                               "\"ClientName\": \"Text Comapany Inc\",\r\n    \"DateAdded\": \"02/19/2019\"\r\n  },\r\n  {\r\n    " +
-                                               "\"ClientName\": \"Placeholder Realstate Agency\",\r\n    \"DateAdded\": \"03/30/2023\"\r\n  },\r\n  {\r\n    " +
-                                               "\"ClientName\": \"Levi Butler\",\r\n    \"DateAdded\": \"04/01/2000\"\r\n  },\r\n  {\r\n    " +
-                                               "\"ClientName\": \"The Clients\",\r\n    \"DateAdded\": \"05/10/2020\"\r\n  },\r\n  {\r\n    " +
-                                               "\"ClientName\": \"Mr Name\",\r\n    \"DateAdded\": \"07/15/2022\"\r\n  },\r\n  {\r\n    " +
-                                               "\"ClientName\": \"Brian Smith\",\r\n    \"DateAdded\": \"08/23/2021\"\r\n  },\r\n  {\r\n    " +
-                                               "\"ClientName\": \"Ian Klein\",\r\n    \"DateAdded\": \"01/30/2023\"\r\n  },\r\n  {\r\n    " +
-                                               "\"ClientName\": \"Dr Eleven\",\r\n    \"DateAdded\": \"03/12/2023\"\r\n  },\r\n  {\r\n    " +
-                                               "\"ClientName\": \"Andy Rue\",\r\n    \"DateAdded\": \"03/31/2023\"\r\n  },\r\n  {\r\n    " +
-                                               "\"ClientName\": \"Long Name aaaaaaaaaaaaaaaaaaaa\",\r\n    \"DateAdded\": \"03/29/2015\"\r\n  },\r\n  {\r\n    " +
-                                               "\"ClientName\": \"New People Company\",\r\n    \"DateAdded\": \"03/31/2023\"\r\n  }\r\n]";
+            String JClients = "[\r\n  {\r\n     \"ClientName\": \"Barry Canary\",\r\n    \"DateAdded\": \"2020/04/20\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Adam Adams\",\r\n    \"DateAdded\": \"2022/10/15\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Code Louisville\",\r\n    \"DateAdded\": \"2021/12/02\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Text Comapany Inc\",\r\n    \"DateAdded\": \"2019/02/19\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Placeholder Realstate Agency\",\r\n    \"DateAdded\": \"2023/03/30\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Levi Butler\",\r\n    \"DateAdded\": \"2000/04/01\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"The Clients\",\r\n    \"DateAdded\": \"2020/05/10\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Mr Name\",\r\n    \"DateAdded\": \"2022/07/15\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Brian Smith\",\r\n    \"DateAdded\": \"2021/08/23\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Ian Klein\",\r\n    \"DateAdded\": \"2023/01/30\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Dr Eleven\",\r\n    \"DateAdded\": \"2023/03/12\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Andy Rue\",\r\n    \"DateAdded\": \"2023/03/31\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Long Name aaaaaaaaaaaaaaaaaaaa\",\r\n    \"DateAdded\": \"2015/03/29\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"New People Company\",\r\n    \"DateAdded\": \"2023/03/31\"\r\n  }\r\n]";
             File.WriteAllText(clientRepoLocation, (JClients));
         }
 
         public void SaveRepo()
         {
             Console.WriteLine("\n\nSaving Repository");
+            Clients = Clients.OrderBy(client => client.DateAdded).ToList();
 
             string JClients = JsonConvert.SerializeObject(Clients, Formatting.Indented);
             File.WriteAllText(clientRepoLocation, (JClients));
@@ -159,6 +161,12 @@ namespace ClientOrganizer
 
             if (index != -1)
                 Clients[index] = newClient;
+        }
+
+        public void ResetRepo()
+        {
+            CreateInitialClientRepoFile();
+            Clients = LoadRepo();
         }
     }
 }

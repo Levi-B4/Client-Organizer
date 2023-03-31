@@ -9,11 +9,13 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace ClientOrganizer
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
             ClientRepo clientRepo = new ClientRepo();
+            clientRepo.SaveRepo();
+
             int maxClientNameSize = 30;
 
             bool exitApplication = false;
@@ -22,6 +24,7 @@ namespace ClientOrganizer
                                  RemoveClient,
                                  clientRepo.ViewClients,
                                  clientRepo.SaveRepo,
+                                 ResetRepository,
                                  () => exitApplication = ConfirmExitApplication()};
             while (!exitApplication) {
                 Console.WriteLine("\nEnter the number corresponding to what you would like to do\n" +
@@ -30,7 +33,8 @@ namespace ClientOrganizer
                                     "3: Remove Client\n" +
                                     "4: View Clients\n" +
                                     "5: Save Repository\n" +
-                                    "6: Exit\n");
+                                    "6: Reset Repository\n" +
+                                    "7: Exit\n");
 
                 string input = Console.ReadLine();
                 if (int.TryParse(input, out int intInput) && intInput >= 1 && intInput <= mainMenu.Length)
@@ -114,6 +118,14 @@ namespace ClientOrganizer
                 }
 
                 clientRepo.SaveRepo();
+            }
+
+            void ResetRepository()
+            {
+                if (PromptUserWithYesOrNoQuestion("Are you sure you want to reset? All clients, including saved clients, will be lost."))
+                {
+                    clientRepo.ResetRepo();
+                }
             }
 
             bool ConfirmExitApplication()

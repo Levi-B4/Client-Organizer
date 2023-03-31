@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace ClientOrganizer
 {
-    internal class Client
+    public class Client
     {
         public Client(string clientName)
         {
             ClientName = clientName;
-            DateAdded = DateTime.Now.ToString("MM/dd/yyyy");
+            DateAdded = DateTime.Now.ToString("yyyy/MM/dd");
         }
         public string ClientName { get; set; }
         public string DateAdded { get; set; }
