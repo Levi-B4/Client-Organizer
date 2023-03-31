@@ -7,7 +7,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 //change client search so there are less nested statements
 
-namespace EventOrganizer
+namespace ClientOrganizer
 {
     internal class Program
     {

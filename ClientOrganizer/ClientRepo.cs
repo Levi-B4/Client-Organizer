@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using System.Web;
 using static System.Formats.Asn1.AsnWriter;
 
-namespace EventOrganizer
+namespace ClientOrganizer
 {
     internal class ClientRepo
     {
@@ -55,15 +55,20 @@ namespace EventOrganizer
 
         private void CreateInitialClientRepoFile()
         {
-            var clients = new List<Client>()
-            {
-                new Client("Barry Canary"),
-                new Client("Adam Adams"),
-                new Client("Code Louisville")
-            };
-            
-            string JClients = JsonConvert.SerializeObject(clients, Formatting.Indented);
-
+            String JClients = "[\r\n  {\r\n     \"ClientName\": \"Barry Canary\",\r\n    \"DateAdded\": \"04/20/2020\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Adam Adams\",\r\n    \"DateAdded\": \"10/15/2022\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Code Louisville\",\r\n    \"DateAdded\": \"12/02/2021\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Text Comapany Inc\",\r\n    \"DateAdded\": \"02/19/2019\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Placeholder Realstate Agency\",\r\n    \"DateAdded\": \"03/30/2023\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Levi Butler\",\r\n    \"DateAdded\": \"04/01/2000\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"The Clients\",\r\n    \"DateAdded\": \"05/10/2020\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Mr Name\",\r\n    \"DateAdded\": \"07/15/2022\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Brian Smith\",\r\n    \"DateAdded\": \"08/23/2021\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Ian Klein\",\r\n    \"DateAdded\": \"01/30/2023\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Dr Eleven\",\r\n    \"DateAdded\": \"03/12/2023\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Andy Rue\",\r\n    \"DateAdded\": \"03/31/2023\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"Long Name aaaaaaaaaaaaaaaaaaaa\",\r\n    \"DateAdded\": \"03/29/2015\"\r\n  },\r\n  {\r\n    " +
+                                               "\"ClientName\": \"New People Company\",\r\n    \"DateAdded\": \"03/31/2023\"\r\n  }\r\n]";
             File.WriteAllText(clientRepoLocation, (JClients));
         }
 
