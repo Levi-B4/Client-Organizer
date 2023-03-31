@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Xml.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 //change client search so there are less nested statements
 
@@ -9,69 +12,104 @@ namespace EventOrganizer
     {
         static void Main(string[] args)
         {
-            ClientRepo clientRepo = new ClientRepo();          
-            
-            bool Exit = false;
+            ClientRepo clientRepo = new ClientRepo();
 
-            while (!Exit) {
-                //UI Window
-                Console.WriteLine("What would you like to do to a client.\n" +
+            bool exitApplication = false;
+            Action[] mainMenu = {AddClient,
+                                 EditClient,
+                                 RemoveClient,
+                                 clientRepo.SaveRepo,
+                                 () => exitApplication = true};
+            while (!exitApplication) {
+
+                Console.WriteLine("Enter the number corresponding to what you would like to do\n" +
                                     "1: Add Client\n" +
                                     "2: Edit Client\n" +
                                     "3: Remove Client\n" +
-                                    "4: Exit\n");
+                                    "4: Save Repository\n" +
+                                    "5: Exit\n");
+
                 string input = Console.ReadLine();
-
-                switch (input)
+                if (int.TryParse(input, out int intInput) && intInput >= 1 && intInput <= mainMenu.Length)
                 {
-                    case "1":
-                        AddClient();
-                        clientRepo.SaveRepo();
-                        break;
-
-                    case "2":
-                        /*
-                        ToDo:Client client = SearchForExistingClient();
-                        editClient();
-                        */
-                        break;
-                    
-                    case "3":
-                        /*
-                        client = SearchForExistingClient();
-                        RemoveClient(client);
-                        */
-                        break;
-                    
-                    case "4":
-                        //Exit
-                        Exit = true;
-                        break;
-
-                    default:
-                        Console.WriteLine("Please enter the number corresponding to your desired option.");
-                        break;
+                    mainMenu[intInput - 1]();
                 }
+                else Console.WriteLine("Please enter a valid number.");
             }
+            clientRepo.SaveRepo();
 
-            bool VerifyClientIsNew(string ClientName)
-            {
-                return true;
-            }
 
             void AddClient()
             {
-                Console.WriteLine("Client has been added");
+                Console.WriteLine("Adding Client is not yet implimented");
             }
 
             void EditClient()
             {
-                Console.WriteLine("Edit");
+                Console.WriteLine("Editing Client");
+
+                Client clientToEdit = PromptUserToSearchForClient();
+                if (clientToEdit.ClientName == "exit search")
+                {
+                    return;
+                }
+
+                bool stillEditing = true;
+
+                Action saveClientEdits = () =>
+                {
+                    clientRepo.UpdateClientInTempMemory(clientToEdit);
+                    clientRepo.SaveRepo();
+                };
+
+                Action[] editorMenu = {clientToEdit.RenameClient,
+                                       clientToEdit.AddEvent,
+                                       clientToEdit.RemoveEvent,
+                                       clientToEdit.EditEvent,
+                                       saveClientEdits,
+                                       () => stillEditing = false};
+
+                while (stillEditing)
+                {
+                    Console.WriteLine($"Enter the number corresponding to what you would like to edit for {clientToEdit.ClientName}.\n" +
+                                       "1: Change Client Name\n" +
+                                       "2: Add Event\n" +
+                                       "3: Remove Event\n" +
+                                       "4: Edit Event\n" +
+                                       "5: Save Edits\n" +
+                                       "6: Return to Main Menu");
+
+                    string input = Console.ReadLine();
+                    if (int.TryParse(input, out int intInput) && intInput >= 1 && intInput <= editorMenu.Length)
+                    {
+                        editorMenu[intInput - 1]();
+                    }
+                    else Console.WriteLine("Please enter a valid number");
+                }
             }
+
 
             void RemoveClient()
             {
-                Console.WriteLine($"Client has been removed");
+                Console.WriteLine($"Remove Client has not been implimented");
+            }
+
+            Client PromptUserToSearchForClient()
+            {
+                string input;
+                do
+                {
+                    Console.WriteLine("Enter the client's name or type \"Exit Search\" to exit to main menu. (30 characters or less)");
+                    input = Console.ReadLine();
+                    if(input.ToLower() == "Exit Search")
+                    {
+                        return new Client("Exit Search");
+                    }
+                } while (string.IsNullOrWhiteSpace(input) || input.Length > 30);
+
+                Client selectedClient = clientRepo.SearchForExistingClient(input);
+
+                return selectedClient;
             }
         }
     }

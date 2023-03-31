@@ -13,14 +13,33 @@ namespace EventOrganizer
             ClientName = clientName;
         }
         public string ClientName { get; set; }
-        public List<Event> ClientEvents { get; set; }
-    
-        public void EditClient()
-        {
-            Console.WriteLine("Client editing has not yet been implimented.");
+        public int MaxClientNameSize { get; set; } = 30;
+        public List<IEvent> ClientEvents { get; set; }
 
-            ClientEvents.Add(new Event());
-            ClientEvents.Add(new Event());
+
+        public void RenameClient()
+        {
+            Console.WriteLine("Rename Client has not yet been implimented.");
+        }
+        public void AddEvent()
+        {
+            Console.WriteLine("Add Event has not yet been implimented.");
+        }
+        public void EditEvent()
+        {
+            Console.WriteLine("Edit Event has not yet been implimented.");
+        }
+        public void RemoveEvent()
+        {
+            Console.WriteLine("Remove Event has not yet been implimented.");
+        }
+        public void ViewEvents()
+        {
+            Console.WriteLine("View not yet implimented");
+        }
+        public void VerifyNewEvent() 
+        {
+            Console.WriteLine("Verification for new events not yet implimented");
         }
     }
 }

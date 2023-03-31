@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO.Pipes;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -23,12 +25,6 @@ namespace EventOrganizer
         public ClientRepo()
         {
             Clients = LoadRepo();
-        }
-
-        public Client SearchForExistingClient()
-        {
-            Console.WriteLine("Searching for Client");
-            return new Client("Placeholder");
         }
 
         public List<Client> LoadRepo()
@@ -52,7 +48,7 @@ namespace EventOrganizer
                 System.Environment.Exit(1);
             }
 
-            Console.WriteLine("Repository loaded");
+            Console.WriteLine("Repository loaded\n\n");
 
             return clients;
         }
@@ -73,11 +69,76 @@ namespace EventOrganizer
 
         public void SaveRepo()
         {
+            Console.WriteLine("\n\nSaving Repository");
+
             string JClients = JsonConvert.SerializeObject(Clients, Formatting.Indented);
-            
             File.WriteAllText(clientRepoLocation, (JClients));
             
-            Console.WriteLine(JClients);
+            Console.WriteLine("Repository Saved");
+        }
+
+        public Client SearchForExistingClient(string clientName)
+        {
+            Console.WriteLine($"Searching for {clientName}");
+            IEnumerable<Client> matches = Clients.Where(client => client.ClientName.Contains(clientName));
+
+            bool selectingClient;
+            for (int i = 0; i < matches.Count(); i++)
+            {
+                Console.WriteLine($"{i + 1}: {matches.ElementAt(i).ClientName}");
+
+                if (i + 1 % 5 == 0 || i + 1 == matches.Count())
+                {
+                    selectingClient = true;
+                    while (selectingClient)
+                    {
+                        Console.WriteLine("Enter the number of the correspiding client " +
+                                          "or type Next Page to view more matching clients. " +
+                                          "Type Exit to exit search");
+                        string input = Console.ReadLine();
+                        if (int.TryParse(input, out int SelectedClientInd) && (SelectedClientInd >= 1 || SelectedClientInd <= 5) && SelectedClientInd <= matches.Count())
+                        {
+                            return matches.ElementAt(int.Parse(input) - 1);
+                        }
+                        else if (input.ToLower() == "exit")
+                        {
+                            Console.WriteLine("\nExiting search\n");
+                            return new Client("exit search");
+                        }
+                        else if (input.ToLower() == "next page")
+                        {
+                            selectingClient = false;
+                        }
+                        Console.WriteLine("\nPlease enter a valid input.\n");
+                    }
+                }
+            }
+            Console.WriteLine("\nClient was not found, exiting search.\n");
+            return new Client("exit search");
+        }
+
+        public Client SearchExactClientName(String clientName)
+        {
+            return Clients.Where(i => i.ClientName == clientName).First();
+        }
+
+        public void AddClientToTempMemory()
+        {
+
+        }
+
+        public void RemoveClientFromTempMemory()
+        {
+
+        }
+
+        public void UpdateClientInTempMemory(Client newClient)
+        {
+            Client clientToUpdate = Clients.Where(i => i.ClientName == newClient.ClientName).First();
+            var index = Clients.IndexOf(clientToUpdate);
+
+            if (index != -1)
+                Clients[index] = newClient;
         }
     }
 }
