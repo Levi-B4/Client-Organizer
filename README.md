@@ -14,5 +14,5 @@ Client organizer is a console application that recieves user input in order to a
 7. Analyzes date strings and organizes them chronologically
 
 ## To Run
-- clone repository and open the executable file in the executable folder.
+- clone repository and open the executable file in the "Executable" folder.
 - If that doesnt work, open ClientOrganizer.sln in visual studio and build and run directly using visual studio.
