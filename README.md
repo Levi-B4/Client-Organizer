@@ -1,5 +1,4 @@
-# Client
--Organizer
+# Client Organizer
 
 ## Description
 Client organizer is a console application that recieves user input in order to add, remove, and rename clients. Client organizer will note the date when a client is added and organize the clients by the date added.
